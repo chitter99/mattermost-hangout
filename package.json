@@ -1,0 +1,25 @@
+{
+  "name": "mattermost-hangout",
+  "version": "1.0.0",
+  "description": "**Most Code is from [this](https://github.com/suda/slack-hangout) repository. I just modified it to work with mattermost. All credit belongs to suda.**",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chitter99/mattermost-hangout.git"
+  },
+  "author": "chitter99",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chitter99/mattermost-hangout/issues"
+  },
+  "homepage": "https://github.com/chitter99/mattermost-hangout#readme",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "googleapis": "^16.1.0",
+    "moment": "^2.17.1"
+  }
+}
