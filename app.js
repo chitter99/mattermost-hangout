@@ -103,15 +103,20 @@ var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
 	console.log('Listening on ' + port);
 	
-	console.log('Require auth.json');
-	googleToken = JSON.parse(fs.readFileSync(__dirname + '/auth.json', 'utf8'));
-	if(typeof(googleToken) != 'undefined') {
-		oauth2Client.setCredentials({
-			access_token: googleToken.access_token,
-			refresh_token: googleToken.refresh_token
-		});
-		console.log('Done!');
+	if(fs.existsSync(__dirname + '/auth.json')) {
+		console.log('Require auth.json');
+		googleToken = JSON.parse(fs.readFileSync(__dirname + '/auth.json', 'utf8'));
+		if(typeof(googleToken) != 'undefined') {
+			oauth2Client.setCredentials({
+				access_token: googleToken.access_token,
+				refresh_token: googleToken.refresh_token
+			});
+			console.log('Done!');
+		} else {
+			console.log('Something went wrong!');
+		}
 	} else {
-		console.log('Something went wrong (ignore this if this your first run)!');
+		console.log('Cannot find auth.json');
 	}
+	
 });
