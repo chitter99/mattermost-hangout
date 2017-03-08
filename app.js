@@ -2,18 +2,23 @@ var express = require('express');
 var moment = require('moment');
 var google = require('googleapis');
 var calendar = google.calendar('v3');
-var OAuth2 = google.auth.OAuth2;
-
+var fs = require('fs')
+var morgan = require('morgan')
 var bodyParser = require('body-parser');
+
 var app = express();
 
+var OAuth2 = google.auth.OAuth2;
 var oauth2Client = oauth2Client = new OAuth2(
 	process.env.CLIENT_ID,
 	process.env.CLIENT_SECRET,
 	process.env.REDIRECT_URL
 );
-var googleToken = process.env.GOOGLE_TOKEN;
+var googleToken;
 
+var HttpLogStream = fs.createWriteStream(__dirname + '/http.log', {flags: 'a'})
+
+app.use(morgan('combined', {stream: HttpLogStream}))
 app.use(bodyParser.urlencoded());
 
 app.get('/auth', function(req, res) {
@@ -27,43 +32,33 @@ app.get('/auth', function(req, res) {
 app.get('/oauth2callback', function(req, res) {
 	oauth2Client.getToken(req.query["code"], function(err, token) {
 		if (err) {
-			console.log("Error: " + err);
-			res.send(500, "Error getting token.");
+			console.log('Error: ' + err);
+			res.send(500, 'Error getting token.');
 			return;
 		}
 
 		console.log('Received token: ', token);
-
-		if (typeof(token.refresh_token) != 'undefined') {
-			oauth2Client.credentials = {
-				access_token: token.access_token,
-				refresh_token: token.refresh_token,
-				token_type: 'Bearer'
-			};
-			oauth2Client.refreshAccessToken(function(err, tokens) {
-				if (!err) {
-					console.log('Error: ', err);
-					res.send(500, err);
-				} else {
-					console.log('Refreshed tokens: ', tokens);
-					res.send(tokens);
-				}
-			});
-		} else {
-			res.send(token);
-		}
+		googleToken = token;
+		
+		fs.writeFile('auth.json', JSON.stringify(googleToken), function (err,data) {
+			if (err) {
+				return console.log('File Error: ' + err);
+			}
+		});
+		
+		oauth2Client.setCredentials({
+			access_token: googleToken.access_token,
+			refresh_token: googleToken.refresh_token,
+			expiry_date: 1000
+		});
+		
+		res.send(200, "Success!");
 	});
 });
 
 app.post('/', function(req, res) {
-	console.log(req.body);
 	if ((req.body.command == '/hangout') && (typeof(req.body.user_name) != 'undefined')) {
-		oauth2Client.credentials = {
-			access_token: googleToken,
-			token_type: 'Bearer'
-		};
 		var now = moment().format();
-		
 		calendar
 			.events
 			.insert({
@@ -106,4 +101,10 @@ app.post('/', function(req, res) {
 var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
 	console.log('Listening on ' + port);
+	if(typeof(googleToken) != 'undefined') {
+		oauth2Client.setCredentials({
+			access_token: googleToken.access_token,
+			refresh_token: googleToken.refresh_token
+		});
+	}
 });
