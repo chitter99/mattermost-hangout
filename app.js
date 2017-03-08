@@ -37,7 +37,7 @@ app.get('/oauth2callback', function(req, res) {
 			return;
 		}
 
-		if(typeof(token.refresh_token) == 'undefined') token.refresh_token = googleToken.refresh_token; /* When googel refreshes the token no refresh_token is provided */
+		if(typeof(token.refresh_token) == 'undefined' && typeof(googleToken.refresh_token) != 'undefined') token.refresh_token = googleToken.refresh_token; /* When googel refreshes the token no refresh_token is provided */
 		
 		console.log('Received token: ', token);
 		googleToken = token;
