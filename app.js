@@ -33,10 +33,12 @@ app.get('/oauth2callback', function(req, res) {
 	oauth2Client.getToken(req.query["code"], function(err, token) {
 		if (err) {
 			console.log('Error: ' + err);
-			res.send(500, 'Error getting token.');
+			res.status(500).send('Error getting token.');
 			return;
 		}
 
+		if(typeof(token.refresh_token) == 'undefined') token.refresh_token = googleToken.refresh_token; /* When googel refreshes the token no refresh_token is provided */
+		
 		console.log('Received token: ', token);
 		googleToken = token;
 		
@@ -48,11 +50,10 @@ app.get('/oauth2callback', function(req, res) {
 		
 		oauth2Client.setCredentials({
 			access_token: googleToken.access_token,
-			refresh_token: googleToken.refresh_token,
-			expiry_date: 1000
+			refresh_token: googleToken.refresh_token
 		});
 		
-		res.send(200, "Success!");
+		res.status(200).send("Success!");
 	});
 });
 
@@ -83,28 +84,34 @@ app.post('/', function(req, res) {
 				auth: oauth2Client
 			}, function(err, event) {
 				if (event != null) {
-					res.send(200, JSON.stringify({
+					res.status(200).send(JSON.stringify({
 							response_type: 'in_channel',
 							text: '**' + req.body.user_name + ' invites to Hangout**\nClick <' + event.hangoutLink + '|here> to join!',
 							username: 'Mattermost Hangout',
 							icon_url: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Hangouts_Icon.png'
 					}));
 				} else {
-					res.send(500, err);
+					res.satus(500).send(err);
 				}
 			});
 	} else {
-		res.send(400, 'Invalid parameters');
+		res.status(400).send('Invalid parameters');
 	}
 });
 
 var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
 	console.log('Listening on ' + port);
+	
+	console.log('Require auth.json');
+	googleToken = require('./auth.json');
 	if(typeof(googleToken) != 'undefined') {
 		oauth2Client.setCredentials({
 			access_token: googleToken.access_token,
 			refresh_token: googleToken.refresh_token
 		});
+		console.log('Done!');
+	} else {
+		console.log('Something went wrong (ignore this if this your first run)!');
 	}
 });
