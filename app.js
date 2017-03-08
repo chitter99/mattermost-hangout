@@ -42,7 +42,7 @@ app.get('/oauth2callback', function(req, res) {
 		console.log('Received token: ', token);
 		googleToken = token;
 		
-		fs.writeFile('auth.json', JSON.stringify(googleToken), function (err,data) {
+		fs.writeFile(__dirname + '/auth.json', JSON.stringify(googleToken), function (err,data) {
 			if (err) {
 				return console.log('File Error: ' + err);
 			}
@@ -104,7 +104,7 @@ app.listen(port, function() {
 	console.log('Listening on ' + port);
 	
 	console.log('Require auth.json');
-	googleToken = require('./auth.json');
+	googleToken = JSON.parse(fs.readFileSync(__dirname + '/auth.json', 'utf8'));
 	if(typeof(googleToken) != 'undefined') {
 		oauth2Client.setCredentials({
 			access_token: googleToken.access_token,
