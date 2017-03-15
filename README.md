@@ -61,6 +61,7 @@ To use this repository with docker please follow this link [here](https://github
  npm -r dotenv/config start
  ```
  If you want to you can put this in a batch, shell or bash file depending on your platform.
+
 6. Link with Google Account
  The last thing you will need to do is link your Application with an Google Account.
  To do this open you Webbrowser and visit `http://<your-ip-or-domain>:5000/auth` and login with an Google Account.
