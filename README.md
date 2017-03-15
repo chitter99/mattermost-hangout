@@ -21,7 +21,10 @@ To use this application you ether need a valid domain and a server connected to 
 
 ### Docker
 
-To use this repository with docker please follow this link [here](https://github.com/chitter99/mattermost-hangout-docker).
+You can ether use normal Docker with the following command:
+``
+docker run --env CLIENT_ID=<client_id> --env CLIENT_SECRET=<client_secret> --env REDIRECT_URL=<redirect_url> chitter99/mattermost-hangout:latest 
+``
 
 ### NodeJS
 
