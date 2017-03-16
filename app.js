@@ -16,11 +16,13 @@ var oauth2Client = oauth2Client = new OAuth2(
 );
 var googleToken;
 
+if(!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.REDIRECT_URL) {
+	console.log('Required parameter not given!');
+	process.exit(1)
+}
+
 var HttpLogStream = fs.createWriteStream(__dirname + '/http.log', {flags: 'a'})
 
-/**
-
-*/
 function loadAuth()
 {
 	if(fs.existsSync(__dirname + '/auth.json')) {
@@ -40,8 +42,29 @@ function loadAuth()
 	}
 }
 
+function responseMessage(message, type='in_channel')
+{
+	JSON.stringify({
+			response_type: type,
+			text: message,
+			username: 'Mattermost Hangout',
+			icon_url: GetURL() + 'icon.png'
+	});
+}
+
+function GetURL()
+{
+	return 'http://' + process.env.EXTERNAL_IP + ':' + port + '/';
+}
+
 app.use(morgan('combined', {stream: HttpLogStream}))
 app.use(bodyParser.urlencoded());
+
+app.use(express.static(__dirname + '/view'));
+app.use(express.static(__dirname + '/public'));
+app.get('/', function(req, res) {
+	res.sendFile('index.html');
+});
 
 app.get('/auth', function(req, res) {
 	var url = oauth2Client.generateAuthUrl({
@@ -95,7 +118,7 @@ app.get('/oauth2callback', function(req, res) {
 			refresh_token: googleToken.refresh_token
 		});
 		
-		res.status(200).send("Success!");
+		res.sendFile('success.html');
 	});
 });
 
@@ -126,14 +149,16 @@ app.post('/', function(req, res) {
 				auth: oauth2Client
 			}, function(err, event) {
 				if (event != null) {
-					res.status(200).send(JSON.stringify({
-							response_type: 'in_channel',
-							text: '**' + req.body.user_name + ' invites to Hangout**\nClick <' + event.hangoutLink + '|here> to join!',
-							username: 'Mattermost Hangout',
-							icon_url: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Hangouts_Icon.png'
-					}));
+					
+					var message = '**{user} invites to Hangout**\nClick <{link}|here> to join!';
+					
+					message = message.replace('{user}', req.body.user);
+					message = message.replace('{link}', event.hangoutLink);
+					
+					res.status(200).send(responseMessage(message));
 				} else {
-					res.satus(500).send(err);
+					console.log(err);
+					res.satus(200).send(responseMessage('An error occured!\n``' + err + '``', 'ephemeral'));
 				}
 			});
 	} else {
