@@ -117,7 +117,7 @@ app.get('/oauth2callback', function(req, res) {
 			access_token: googleToken.access_token,
 			refresh_token: googleToken.refresh_token
 		});
-		res.sendFile(__dirname + 'success.html');
+		res.sendFile(__dirname + '/success.html');
 	});
 });
 
