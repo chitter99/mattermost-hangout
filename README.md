@@ -2,6 +2,12 @@
 
 **Most Code is from [this](https://github.com/suda/slack-hangout) repository. I just modified it to work with mattermost and added some features.**
 
+## Introduction
+
+This Application allows you to create a Hangout Call via a Command.
+
+![Screenshot of Application](screenshots/screenshot1.jpg)
+
 ## Installation / Configuration
 
 You can ether use docker or just nodejs. However we recomend using docker to install and use this application.
@@ -89,3 +95,9 @@ You can use docker-compose to run this application with docker.
  I recomend creating an extra Google Account, because all meetings will be scheduled as this User.
  When creating a new Google Account, open Google Calendar Settings and change `Automatically add video calls to events I create` to `true` on order to ensure this Application works.
  You can find this setting [here](https://calendar.google.com/calendar/render#settings-general_11).
+
+## Integration into Mattermost
+
+To Enable using this command go to your Mattermost instance, select a Team and press on the three dots right to your username.
+Choose Integrations then Slash Commands and add a new Command. Set Request Methode to POST and fill the rest of the Data according to your Settup, press Save. Test the Integration by entering /hangout into any channel or private group you want.
+
