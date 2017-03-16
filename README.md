@@ -21,11 +21,27 @@ To use this application you ether need a valid domain and a server connected to 
 
 ### Docker
 
-You can ether use normal Docker with the following command:
-``
-docker run --env CLIENT_ID=<client_id> --env CLIENT_SECRET=<client_secret> --env REDIRECT_URL=<redirect_url> chitter99/mattermost-hangout:latest 
-``
+You can use docker-compose to run this application with docker.
 
+1. Clone docker repository from [here](https://github.com/chitter99/mattermost-hangout-docker)
+2. Add this into your docker-compose.yml
+ ```
+ hangout:
+  build: hangout
+  ports:
+    - "5000:5000"
+  restart: always
+  environment:
+    - CLIENT_ID=<client_id>
+    - CLIENT_SECRET=<client_secret>
+    - REDIRECT_URL=<redirect_url>
+	- EXTERNAL_IP=<your_external_or_local_ip>
+    - PORT=5000
+ ```
+3. Run ``docker-compose build hangout``
+4. Run ``docker-compose up -d hangout``
+5. Follow Step 6 from the NodeJS Instructions.
+ 
 ### NodeJS
 
 1. Install NodeJS and NPM
@@ -53,11 +69,13 @@ docker run --env CLIENT_ID=<client_id> --env CLIENT_SECRET=<client_secret> --env
  CLIENT_ID=
  CLIENT_SECRET=
  REDIRECT_URL=
+ EXTERNAL_IP=localhost
  PORT=5000
  ```
  You now need to add your client id, client secret and redirect url from google. 
  If you want to you can enter a new port (the port must be the same on your redirect url. So if you change him here, change him also in your google console).
-
+ You will need to enter your external Ip Address, Domain or local Ip to enable support for a Bot icon. For example I'm running this Application on a Server in our Network, avariable under the local Ip Adress 192.168.1.10. I would enter this Ip Adress.
+ 
 5. Start applicatoin
  To run this application only the following command is required.
  ```
