@@ -44,7 +44,7 @@ function loadAuth()
 
 function responseMessage(message, type='in_channel')
 {
-	JSON.stringify({
+	return JSON.stringify({
 			response_type: type,
 			text: message,
 			username: 'Mattermost Hangout',
