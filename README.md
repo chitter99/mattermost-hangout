@@ -1,6 +1,6 @@
 # Mattermost plugin for integrating hangouts
 
-**Most Code is from [this](https://github.com/suda/slack-hangout) repository. I just modified it to work with mattermost and added some features.**
+**The Concept is from [this](https://github.com/suda/slack-hangout) repository.**
 
 ## Introduction
 
