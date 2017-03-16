@@ -151,7 +151,7 @@ app.post('/', function(req, res) {
 					
 					var message = '**{user} invites to Hangout**\nClick <{link}|here> to join!';
 					
-					message = message.replace('{user}', req.body.user);
+					message = message.replace('{user}', req.body.user_name);
 					message = message.replace('{link}', event.hangoutLink);
 					
 					res.status(200).send(responseMessage(message));
