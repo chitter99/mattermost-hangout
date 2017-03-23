@@ -75,7 +75,7 @@ You can use docker-compose to run this application with docker.
  CLIENT_ID=
  CLIENT_SECRET=
  REDIRECT_URL=
- EXTERNAL_IP=localhost
+ HOSTNAME=localhost
  PORT=5000
  ```
  You now need to add your client id, client secret and redirect url from google. 
@@ -100,4 +100,21 @@ You can use docker-compose to run this application with docker.
 
 To Enable using this command go to your Mattermost instance, select a Team and press on the three dots right to your username.
 Choose Integrations then Slash Commands and add a new Command. Set Request Methode to POST and fill the rest of the Data according to your Settup, press Save. Test the Integration by entering /hangout into any channel or private group you want.
+
+## Customize Message
+
+You can change the Message this Plugin sends to all users via your .env file or a parameter. The Variable `MESSAGE` is responsible for that. You can use the following values which will be replaced before sending the Message to Mattermost.
+
+`{user}`: Will be replaced with the sender's Username.
+`{link}`: Will be replaced with the link to the Mattermost Meeting.
+
+An example is defined below.
+```
+{user} invites you to <{link}|join> Hangout!
+```
+
+
+
+
+
 
