@@ -1,0 +1,12 @@
+<h1>Something went wrong!</h1>
+<p>While performing this action something went wrong. Please check the Console for more Information.</p>
+<pre>Error: {{error_message}}</pre>
+{{#if error_help}}
+<h2>To resolve this Issue, try the following:</h2>
+<ul>
+{{#each error_help}}
+	<li><p>{{this}}</p></li>
+{{/each}}
+{{/if}}
+</ul>
+<p>If you can't resolve this Problem on your own, feel free to <a href="./github/issues" target="_blank">create</a> an issue an my GitHub Page.</p>

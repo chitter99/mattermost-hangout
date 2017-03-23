@@ -1,0 +1,70 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+	font-size: 2em;
+}
+p, a {
+	font-size: 1em;
+	margin-bottom: -0.8em;
+}
+a {
+	color: blue;
+}
+
+main {
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
+aside {
+	margin-top: 4em;
+	margin-bottom: 4em;
+}
+aside, img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+pre {
+	margin-top: 2.5em;
+	margin-bottom: 1.5em; /* - <p> margin */
+	margin-left: 1em;
+}
+
+progress {
+	display: block;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
+ul#checks {
+	margin: 0;
+	padding: 0;
+	width: 25em;
+	margin-top: 1.9em;
+	margin-left: 1em;
+}
+ul#checks li {
+	list-style: none;
+	font-family: monospace;
+    white-space: pre;
+	font-size: 1.2em;
+    margin-bottom: 2.1px;
+}
+
+ul#checks li a {
+	color: black;
+	float: right;
+}
+
+
