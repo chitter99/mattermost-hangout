@@ -41,7 +41,7 @@ You can use docker-compose to run this application with docker.
     - CLIENT_ID=<client_id>
     - CLIENT_SECRET=<client_secret>
     - REDIRECT_URL=<redirect_url>
-	- EXTERNAL_IP=<your_external_or_local_ip>
+    - HOSTNAME=<your_external_or_local_ip>
     - PORT=5000
  ```
 3. Run ``docker-compose build hangout``
