@@ -2,15 +2,16 @@ var moment = require('moment');
 var google = require('googleapis');
 var calendar = google.calendar('v3');
 var fs = require('fs')
+var config = require('./config.js');
 
 module.exports = (function() {
-	var authPath = __dirname + '/../../auth.json';
+	var authPath = config.getAuthPath();
 	var oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
 	
 	loadAuth = function() {
 		if(!oauth2Client.access_token && !oauth2Client.refresh_token) {
 			if(fs.existsSync(authPath)) {
-				console.log('Load auth.json');
+				console.log('Load ' + authPath);
 				googleToken = JSON.parse(fs.readFileSync(authPath, 'utf8'));
 				if(typeof(googleToken) != 'undefined') {
 					oauth2Client.setCredentials({
@@ -84,7 +85,7 @@ module.exports = (function() {
 			calendarId: 'primary',
 			resource: {
 				summary: user_name + '\'s hangout',
-				description: 'Hangout started from Mattermost',
+				description: config.values.calendar_description,
 				reminders: {
 					overrides: {
 						method: 'popup',
