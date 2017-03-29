@@ -19,12 +19,12 @@ module.exports = function(app){
 		if(google.isAuth()) {
 			res.status(200).send();
 		} else {
-			res.status(500).send();
+			res.status(500).send('Cannot find auth.json');
 		}
 	});
 	app.get('/check/meeting', function(req, res){
 		google.createHangoutMeeting('test', function(err, event) {
-			if(err) {
+			if(typeof err !== 'undefined' || err != null) {
 				res.status(500).send(err); return;
 			}			
 			res.status(200).send();
