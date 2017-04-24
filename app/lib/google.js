@@ -102,6 +102,7 @@ module.exports = (function() {
 			},
 			auth: oauth2Client
 		}, function(err, event) {
+			console.log(err + "" + event);
 			if(err != null || event == null) {
 				return callback((err.toString()).replace('Error: ', ''), null);
 			}

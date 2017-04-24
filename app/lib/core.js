@@ -4,7 +4,7 @@ module.exports.error = function(res, message='Unexpected Error Occured!', help) 
 		error_message: message,
 		error_help: help
 	});
-	console.log('Error Occured: ' + message);
+	console.log('Error: ' + message);
 }
 module.exports.getInformationForError = function(error) {
 	switch(error) {

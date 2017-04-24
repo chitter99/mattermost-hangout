@@ -1,6 +1,7 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var bodyParser = require('body-parser');
+var log = require('./app/lib/log.js');
 
 var app = express();
 
@@ -17,7 +18,9 @@ app.use(express.static(__dirname + '/app/public'));
 
 require(__dirname + '/app/routes')(app);
 
+log.debug("Auth.js is located at " + require('./app/lib/config.js').getAuthPath());
+
 var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
-	console.log('Listening on ' + port);
+	log.info('Listening on ' + port);
 });

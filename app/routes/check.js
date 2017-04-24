@@ -24,7 +24,7 @@ module.exports = function(app){
 	});
 	app.get('/check/meeting', function(req, res){
 		google.createHangoutMeeting('test', function(err, event) {
-			if(typeof err !== 'undefined' || err != null) {
+			if(err != null) {
 				res.status(500).send(err); return;
 			}			
 			res.status(200).send();

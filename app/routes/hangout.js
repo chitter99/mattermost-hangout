@@ -1,6 +1,7 @@
 var core = require('../lib/core.js');
 var google = require('../lib/google.js');
 var mattermost = require('../lib/mattermost.js');
+var log = require('../lib/log.js');
 
 module.exports = function(app){
 	app.post('/', function(req, res){
@@ -15,7 +16,8 @@ module.exports = function(app){
 			var message = (process.env.MESSAGE || '**{user} invites to Hangout**\nClick <{link}|here> to join!');
 			message = message.replace('{user}', req.body.user_name);
 			message = message.replace('{link}', event.hangoutLink);
-			
+						
+			log.info("Created Call for user "+req.body.user_name+" at "+event.hangoutLink+"!");
 			res.status(200).send(mattermost.responseMessage(message));
 		});
 	});
@@ -27,6 +29,7 @@ module.exports = function(app){
 			if(err != null || !token) {
 				return core.error(res, err);
 			}
+			log.info("Successfully linked Google Account!");
 			return res.render('success');
 		});
 	});

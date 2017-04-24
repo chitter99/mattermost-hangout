@@ -30,21 +30,21 @@ function check() {
 							$('#checks li').last().append('<a style="color: green;">passed</a>');
 							$('#checks').append('<li>Every thing passed!</li>');
 						},
-						error: function(data) {
+						error: function(xhr) {
 							$('#checks li').last().append('<a style="color: red;">failed</a>');
-							$('#checks').append('<li style="margin-left: 2em;">' + data + '</li>');
+							$('#checks').append('<li style="margin-left: 2em;">' + xhr.responseText + '</li>');
 						}
 					});
 				},
-				error: function(data) {
+				error: function(xhr) {
 					$('#checks li').last().append('<a style="color: red;">failed</a>');
-					$('#checks').append('<li style="margin-left: 2em;">' + data + '</li>');
+					$('#checks').append('<li style="margin-left: 2em;">' + xhr.responseText + '</li>');
 				}
 			});
 		},
-		error: function(data) {
+		error: function(xhr) {
 			$('#checks li').last().append('<a style="color: red;">failed</a>');
-			$('#checks').append('<li style="margin-left: 2em;">' + data + '</li>');
+			$('#checks').append('<li style="margin-left: 2em;">' + xhr.responseText + '</li>');
 		}
 	});
 }
