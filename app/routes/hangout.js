@@ -18,6 +18,7 @@ module.exports = function(app){
 			message = message.replace('{link}', event.hangoutLink);
 						
 			log.info("Created Call for user "+req.body.user_name+" at "+event.hangoutLink+"!");
+			res.setHeader('Content-Type', 'application/json');
 			res.status(200).send(mattermost.responseMessage(message));
 		});
 	});
