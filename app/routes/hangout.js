@@ -9,6 +9,7 @@ module.exports = function(app){
 			return core.error(res, 'Parameter user_name is missing!');
 		}
 		google.createHangoutMeeting(req.body.user_name, function(err, event) {
+			res.setHeader('Content-Type', 'application/json');
 			if(err) {
 				res.status(200).send(mattermost.responseMessage('An error occured!\n``' + err + '``', 'ephemeral'));
 			}
@@ -18,7 +19,6 @@ module.exports = function(app){
 			message = message.replace('{link}', event.hangoutLink);
 						
 			log.info("Created Call for user "+req.body.user_name+" at "+event.hangoutLink+"!");
-			res.setHeader('Content-Type', 'application/json');
 			res.status(200).send(mattermost.responseMessage(message));
 		});
 	});
