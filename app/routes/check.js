@@ -1,5 +1,5 @@
-var google = require('../lib/google.js');
-var core = require('../lib/core.js');
+const google = require('../lib/google.js');
+const core = require('../lib/core.js');
 
 module.exports = function(app){
 	app.get('/check', function(req, res){

@@ -1,4 +1,4 @@
-var path = require('path');
+const path = require('path');
 
 module.exports.values = require(__dirname + '/../../config/config.json');
 module.exports.getAuthPath = function() {

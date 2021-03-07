@@ -1,12 +1,11 @@
-module.exports = (function() {	
-	this.info = function(message) {
+module.exports = {
+	info(message) {
 		console.log("[" + (new Date()).toUTCString() + "][info] " + message);
-	}
-	this.debug = function(message) {
+	},
+	debug(message) {
 		console.log("[" + (new Date()).toUTCString() + "][debug] " + message);
-	}
-	this.err = function(ex) {
+	},
+	err(ex) {
 		console.err("Error: " + ex);
-	}
-	return this;
-})();
+	},
+}
