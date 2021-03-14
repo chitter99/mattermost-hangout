@@ -6,6 +6,8 @@ const config = require('./config.js');
 
 let googleToken
 
+const CALENDAR_ID = 'primary'
+
 module.exports = (function() {
 	const authPath = config.getAuthPath();
 	const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
@@ -86,7 +88,8 @@ module.exports = (function() {
 
 		const eventTitle = title || (user_name + '\'s meeting');
 		calendar.events.insert({
-			calendarId: 'primary',
+			auth: oauth2Client,
+			calendarId: CALENDAR_ID,
 			conferenceDataVersion: 1,
 			resource: {
 				conferenceData: {
@@ -122,10 +125,20 @@ module.exports = (function() {
 				},
 				attendees: [],
 			},
-			auth: oauth2Client
 		}, function(err, event) {
 			if(err != null || event == null) {
 				return callback((err.toString()).replace('Error: ', ''), null);
+			}
+			if (process.env.AUTO_DELETE_EVENT) {
+				calendar.events.delete({
+					auth: oauth2Client,
+					calendarId: CALENDAR_ID,
+					eventId: event.id,
+				}, function(err) {
+					if (err) {
+						console.error('could not delete calendar event!', err)
+					}
+				})
 			}
 			return callback(null, event);
 		});
