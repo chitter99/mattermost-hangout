@@ -1,4 +1,3 @@
-const dayjs = require('dayjs');
 const google = require('googleapis');
 const calendar = google.calendar('v3');
 const fs = require('fs')
@@ -83,7 +82,7 @@ module.exports = (function() {
 	}
 	
 	function createHangoutMeeting({ user_name, title, trigger_id }, callback) {
-		const now = dayjs().format();
+		const now = (new Date()).toISOString();
 		loadAuth();
 
 		const eventTitle = title || (user_name + '\'s meeting');
