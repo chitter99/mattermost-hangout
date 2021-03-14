@@ -1,6 +1,9 @@
+const fs = require('fs')
+const path = require('path');
+
 const google = require('googleapis');
 const calendar = google.calendar('v3');
-const fs = require('fs')
+
 const config = require('./config.js');
 
 let googleToken
@@ -64,7 +67,14 @@ module.exports = (function() {
 				token.refresh_token = googleToken.refresh_token;
 			}		
 			googleToken = token;
-			
+
+			const targetDir = path.dirname(authPath);
+			if (!fs.existsSync(targetDir)) {
+				console.log('config directory', targetDir, 'doesn\'t exist. creating it')
+				fs.mkdirSync(targetDir, { recursive: true })
+				console.log('created config directory', targetDir)
+			}
+
 			fs.writeFile(authPath, JSON.stringify(googleToken), function (err, data) {
 				if (err)
 				{
