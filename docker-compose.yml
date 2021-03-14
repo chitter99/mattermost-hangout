@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  mattermost-hangout:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    restart: always
+    environment:
+      CLIENT_ID: <your client id>
+      CLIENT_SECRET: <your client secret>
+      REDIRECT_URL: <http[s]://your-app-domain.xyz[:5000(optional port)]>/oauth2callback
+      HOSTNAME: <http[s]://your-app-domain.xyz[:5000(optional port)]>
+      PORT: 5000 (app port, optional)
+      MM_VERIFY_TOKEN: xz7-mm-token (mm token which is given when you register a new slash command. it's optional - no check if not provided)
+      AUTO_DELETE_EVENT: "true"
+    volumes:
+      - ./private-config:/usr/src/hangout/private-config

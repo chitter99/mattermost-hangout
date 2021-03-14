@@ -1,6 +1,8 @@
-var config = require('../lib/config.js');
+const config = require('../lib/config.js');
+
 module.exports = function(app){
 	app.get('/', function(req, res){
+		// homepage
 		res.render('index');
 	});
 	app.get('/github', function(req, res){

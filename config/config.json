@@ -1,5 +1,5 @@
 {
-	"auth_path": "/config/auth.json",
+	"auth_path": "/private-config/auth.json",
 	"calendar_description": "Hangout started from Mattermost",
 	"github": "https://github.com/chitter99/mattermost-hangout/"
 }

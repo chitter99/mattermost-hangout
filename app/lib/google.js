@@ -1,14 +1,20 @@
-var moment = require('moment');
-var google = require('googleapis');
-var calendar = google.calendar('v3');
-var fs = require('fs')
-var config = require('./config.js');
+const fs = require('fs')
+const path = require('path');
+
+const google = require('googleapis');
+const calendar = google.calendar('v3');
+
+const config = require('./config.js');
+
+let googleToken
+
+const CALENDAR_ID = 'primary'
 
 module.exports = (function() {
-	var authPath = config.getAuthPath();
-	var oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
-	
-	loadAuth = function() {
+	const authPath = config.getAuthPath();
+	const oauth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URL);
+
+	function loadAuth() {
 		if(!oauth2Client.access_token && !oauth2Client.refresh_token) {
 			if(fs.existsSync(authPath)) {
 				console.log('Load ' + authPath);
@@ -28,14 +34,14 @@ module.exports = (function() {
 		}
 	}
 	
-	generateAuthUrl = function() {
+	function generateAuthUrl() {
 		return oauth2Client.generateAuthUrl({
 			access_type: 'offline',
 			scope: 'https://www.googleapis.com/auth/calendar'
 		});
 	}
 	
-	getToken = function(code, callback) {
+	function getToken(code, callback) {
 		oauth2Client.getToken(code, function(err, token) {
 			if (err) {
 				return callback((err.toString()).replace('Error: ', ''), null);
@@ -61,7 +67,14 @@ module.exports = (function() {
 				token.refresh_token = googleToken.refresh_token;
 			}		
 			googleToken = token;
-			
+
+			const targetDir = path.dirname(authPath);
+			if (!fs.existsSync(targetDir)) {
+				console.log('config directory', targetDir, 'doesn\'t exist. creating it')
+				fs.mkdirSync(targetDir, { recursive: true })
+				console.log('created config directory', targetDir)
+			}
+
 			fs.writeFile(authPath, JSON.stringify(googleToken), function (err, data) {
 				if (err)
 				{
@@ -78,13 +91,34 @@ module.exports = (function() {
 		});
 	}
 	
-	createHangoutMeeting = function(user_name, callback) {
-		var now = moment().format();
+	function createHangoutMeeting({ user_name, title, trigger_id }, callback) {
+		const now = (new Date()).toISOString();
 		loadAuth();
+
+		const eventTitle = title || (user_name + '\'s meeting');
 		calendar.events.insert({
-			calendarId: 'primary',
+			auth: oauth2Client,
+			calendarId: CALENDAR_ID,
+			conferenceDataVersion: 1,
 			resource: {
-				summary: user_name + '\'s hangout',
+				conferenceData: {
+					createRequest: {
+						conferenceSolutionKey: {
+						//The conference solution type.
+						// If a client encounters an unfamiliar or empty type, it should still be able to display the entry points. However, it should disallow modifications.
+						//
+						// The possible values are:
+						//
+						// "eventHangout" for Hangouts for consumers (http://hangouts.google.com)
+						// "eventNamedHangout" for classic Hangouts for Google Workspace users (http://hangouts.google.com)
+						// "hangoutsMeet" for Google Meet (http://meet.google.com)
+						// "addOn" for 3P conference providers
+							type: 'hangoutsMeet',
+						},
+						requestId: trigger_id || ('some-random-string_' + now)
+					}
+				},
+				summary: eventTitle,
 				description: config.values.calendar_description,
 				reminders: {
 					overrides: {
@@ -93,37 +127,44 @@ module.exports = (function() {
 					}
 				},
 				start: {
-					dateTime: now
+					dateTime: now,
 				},
 				end: {
-					dateTime: now
+					dateTime: now,
 				},
-				attendees: []
+				attendees: [],
 			},
-			auth: oauth2Client
 		}, function(err, event) {
 			if(err != null || event == null) {
 				return callback((err.toString()).replace('Error: ', ''), null);
+			}
+			if (process.env.AUTO_DELETE_EVENT) {
+				calendar.events.delete({
+					auth: oauth2Client,
+					calendarId: CALENDAR_ID,
+					eventId: event.id,
+				}, function(err) {
+					if (err) {
+						console.error('could not delete calendar event!', err)
+					}
+				})
 			}
 			return callback(null, event);
 		});
 	}
 	
 	return {
-		getToken: function(code, callback) {
+		getToken(code, callback) {
 			return getToken(code, callback);
 		},
-		generateAuthUrl: function() {
+		generateAuthUrl() {
 			return generateAuthUrl();
 		},
-		createHangoutMeeting: function(user_name, callback) {
-			return createHangoutMeeting(user_name, callback);
+		createHangoutMeeting(payload, callback) {
+			return createHangoutMeeting(payload, callback);
 		},
-		isAuth: function() {
-			if(fs.existsSync(authPath)) {
-				return true;
-			}
-			return false;
+		isAuth() {
+			return fs.existsSync(authPath);
 		}
 	};
 })();
