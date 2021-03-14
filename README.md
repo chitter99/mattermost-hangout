@@ -64,7 +64,7 @@ HOSTNAME=<http[s]://your-app-domain.xyz[:5000(optional port)]>
 PORT=5000 (app port, optional)
 MM_VERIFY_TOKEN=xz7-mm-token (mm token which is given when you register a new slash command. it's optional - no check if not provided
 AUTO_DELETE_EVENT="true"
-MESSAGE='**{user} invites to Hangout**\nClick <{link}|here> to join!' - optional (see below)
+MESSAGE='**{user} invites to Hangout "{summary}"**\nClick <{link}|here> to join!'' - optional (see below)
 ```
   * You now need to add your client id, client secret and redirect url from google. If you want to you can enter a new port (the port must be the same on your redirect url. So if you change him here, change him also in your google console). 
   * You will need to enter your external Ip Address, Domain or local Ip to enable support for a Bot icon. For example I'm running this Application on a Server in our Network, avariable under the local Ip Adress 192.168.1.10. I would enter this Ip Adress.
@@ -97,14 +97,9 @@ You can change the Message this Plugin sends to all users via your .env file or 
 
 `{user}`: Will be replaced with the sender's Username.
 `{link}`: Will be replaced with the link to the Mattermost Meeting.
+`{summary}`: Will be replaced with the title of the event
 
 An example is defined below.
 ```
-{user} invites you to <{link}|join> Hangout!
+**{user} invites you to "{summary}"**. <{link}|join> Hangout!
 ```
-
-
-
-
-
-

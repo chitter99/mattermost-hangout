@@ -24,10 +24,11 @@ module.exports = function(app){
 				res.status(200).send(mattermost.responseMessage('An error occured!\n``' + err + '``', 'ephemeral'));
 			}
 
-			let message = (process.env.MESSAGE || '**{user} invites to Hangout**\nClick <{link}|here> to join!');
+			let message = (process.env.MESSAGE || '**{user} invites to Hangout "{summary}"**\nClick <{link}|here> to join!');
 			message = message.replace('{user}', req.body.user_name);
 			message = message.replace('{link}', event.hangoutLink);
-						
+			message = message.replace('{summary}', event.summary);
+
 			log.info("Created Call for user "+req.body.user_name+" at "+event.hangoutLink+"!");
 			res.status(200).send(mattermost.responseMessage(message));
 		});
